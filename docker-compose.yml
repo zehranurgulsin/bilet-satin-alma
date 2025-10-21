@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: yavuzlar-app
+    ports:
+      - "8080:80"        # Tarayıcıdan erişim: http://localhost:8080
+    environment:
+      - TZ=Europe/Istanbul
+      - APP_ENV=prod
+    volumes:
+      - yavuzlar_data:/var/www/html/data   # SQLite dosyası kalıcı olur
+    restart: unless-stopped
+
+volumes:
+  yavuzlar_data:
