@@ -4,12 +4,12 @@ services:
     build: .
     container_name: yavuzlar-app
     ports:
-      - "8080:80"        # Tarayıcıdan erişim: http://localhost:8080
+      - "8080:80"       
     environment:
       - TZ=Europe/Istanbul
       - APP_ENV=prod
     volumes:
-      - yavuzlar_data:/var/www/html/data   # SQLite dosyası kalıcı olur
+      - yavuzlar_data:/var/www/html/data   
     restart: unless-stopped
 
 volumes:
