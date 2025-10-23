@@ -5,13 +5,13 @@ if(!is_company_admin()) exit('Yetki yok.');
 $firmId = (int)(me()['company_id'] ?? 0);
 if(!$firmId) exit('Firma atanmadı.');
 
-/* Sil */
+
 if(isset($_GET['del'])){
   $pdo->prepare("DELETE FROM coupons WHERE id=? AND company_id=?")->execute([(int)$_GET['del'],$firmId]);
   header("Location: company_coupons.php"); exit;
 }
 
-/* Ekle/Güncelle */
+
 if($_SERVER['REQUEST_METHOD']==='POST'){
   $id=(int)($_POST['id']??0);
   $code = strtoupper(trim($_POST['code']??''));
@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   header("Location: company_coupons.php"); exit;
 }
 
-/* Liste + düzenleme */
+
 $rows=$pdo->prepare("SELECT * FROM coupons WHERE company_id=? ORDER BY id DESC");
 $rows->execute([$firmId]); $rows=$rows->fetchAll();
 $edit=null;
