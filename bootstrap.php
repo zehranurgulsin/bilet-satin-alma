@@ -1,23 +1,21 @@
 <?php
 declare(strict_types=1);
 
-/* ------------------------------------------------------------------
-   1) SESSION / GÜVENLİ ÇEREZ AYARLARI + GÜVENLİK BAŞLIKLARI
--------------------------------------------------------------------*/
+
 $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 session_set_cookie_params([
   'lifetime' => 0,
   'path'     => '/',
-  'domain'   => '',          // gerekiyorsa domain gir
-  'secure'   => $secure,     // HTTPS varsa true
+  'domain'   => '',          
+  'secure'   => $secure,     
   'httponly' => true,
-  'samesite' => 'Lax',       // daha katı istersen 'Strict'
+  'samesite' => 'Lax',       
 ]);
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 
-/* (Opsiyonel ama faydalı) Güvenlik başlıkları */
+
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: no-referrer');
@@ -25,9 +23,7 @@ if ($secure) {
   header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 }
 
-/* ------------------------------------------------------------------
-   2) VERİTABANI BAĞLANTISI + PRAGMA
--------------------------------------------------------------------*/
+
 $dir = __DIR__ . '/data';
 @mkdir($dir, 0777, true);
 $dbFile = $dir . '/app.db';
@@ -42,9 +38,7 @@ PRAGMA journal_mode = WAL;
 PRAGMA busy_timeout = 5000;
 ");
 
-/* ------------------------------------------------------------------
-   3) ŞEMA (idempotent)
--------------------------------------------------------------------*/
+
 $pdo->exec("
 CREATE TABLE IF NOT EXISTS companies (
   id   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,9 +108,7 @@ CREATE TABLE IF NOT EXISTS wallet_transactions (
 );
 ");
 
-/* ------------------------------------------------------------------
-   4) SEED (örnek veri) — sadece boşsa ekle
--------------------------------------------------------------------*/
+
 if ((int)$pdo->query("SELECT COUNT(*) FROM companies")->fetchColumn() === 0) {
   $pdo->exec("INSERT INTO companies (name) VALUES ('HızlıTur'), ('AnadoluEkspres')");
 }
@@ -136,9 +128,6 @@ if ((int)$pdo->query("SELECT COUNT(*) FROM trips")->fetchColumn() === 0) {
   }
 }
 
-/* ------------------------------------------------------------------
-   5) CSRF YARDIMCILARI
--------------------------------------------------------------------*/
 function csrf_token(): string {
   if (empty($_SESSION['csrf'])) {
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
@@ -155,9 +144,7 @@ function csrf_check(): void {
   }
 }
 
-/* ------------------------------------------------------------------
-   6) GENEL YARDIMCI FONKSİYONLAR
--------------------------------------------------------------------*/
+
 function me(): ?array {
   return $_SESSION['user'] ?? null;
 }
@@ -194,9 +181,7 @@ function base_path(): string {
   return $base === '.' ? '' : $base;
 }
 
-/* ------------------------------------------------------------------
-   7) HATA GÖSTERİMİ (ENV'e göre)
--------------------------------------------------------------------*/
+
 if (getenv('APP_ENV') === 'prod') {
   ini_set('display_errors', '0');
   ini_set('log_errors', '1');
