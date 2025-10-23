@@ -6,14 +6,14 @@ if(!is_company_admin()) exit('Yetki yok.');
 $firmId = (int)(me()['company_id'] ?? 0);
 if(!$firmId) exit('Firma atanmadı. (Admin sizi bir firmaya atamalı)');
 
-/* Sil */
+
 if(isset($_GET['del'])){
   $id=(int)$_GET['del'];
   $pdo->prepare("DELETE FROM trips WHERE id=? AND company_id=?")->execute([$id,$firmId]);
   header("Location: company_trips.php"); exit;
 }
 
-/* Ekle/Güncelle */
+
 if($_SERVER['REQUEST_METHOD']==='POST'){
   $id = (int)($_POST['id']??0);
   $origin = trim($_POST['origin']??'');
@@ -32,7 +32,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   header("Location: company_trips.php"); exit;
 }
 
-/* Liste + düzenleme */
+
 $rows=$pdo->prepare("SELECT * FROM trips WHERE company_id=? ORDER BY departure_at DESC");
 $rows->execute([$firmId]); $rows=$rows->fetchAll();
 $edit=null;
