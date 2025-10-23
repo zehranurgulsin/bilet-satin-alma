@@ -3,9 +3,8 @@ declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once __DIR__ . '/bootstrap.php';   // her şey buradan gelir (DB, session, helperlar)
+require_once __DIR__ . '/bootstrap.php';   
 
-/* === 1) Arama filtreleri === */
 $origin = trim($_GET['origin'] ?? '');
 $destination = trim($_GET['destination'] ?? '');
 $date = trim($_GET['date'] ?? '');
@@ -24,7 +23,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($args);
 $trips = $stmt->fetchAll();
 
-/* === 2) Kullanıcı === */
+
 $me = me();
 ?>
 <!doctype html>
