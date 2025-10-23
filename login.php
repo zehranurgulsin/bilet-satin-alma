@@ -3,7 +3,7 @@ declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once __DIR__ . '/bootstrap.php';  // index.php'yi asla require etme!
+require_once __DIR__ . '/bootstrap.php';  
 csrf_check(); 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['user'] = $user;          // giriş başarılı
+        $_SESSION['user'] = $user;         
         $next = $_GET['next'] ?? 'index.php';
         header("Location: $next");
         exit;
