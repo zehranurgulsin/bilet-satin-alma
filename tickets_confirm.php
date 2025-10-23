@@ -13,14 +13,13 @@ if(!$trip) die("Sefer yok.");
 try {
     $pdo->beginTransaction();
 
-    // Koltuk dolu mu kontrol et
+   
     $st = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE trip_id=? AND seat_no=? AND status='purchased'");
     $st->execute([$trip_id, $seat_no]);
     if ((int)$st->fetchColumn() > 0) {
         throw new Exception("Bu koltuk az önce doldu.");
     }
 
-    // Kupon kontrolü (varsa)
     $price = (int)$trip['price'];
     $appliedCode = null;
     if ($coupon_code) {
@@ -53,7 +52,7 @@ try {
             ");
             $update->execute([$c['id']]);
 
-              // Kupon gerçekten güncellendi mi kontrol et
+              
               if ($update->rowCount() === 0 && $c['usage_limit'] !== null) {
                 $pdo->rollBack();
                 exit('Kupon kullanım limiti doldu veya geçersiz.');
@@ -62,7 +61,6 @@ try {
         }
     }
 
-    // Bakiye kontrolü
     $st = $pdo->prepare("SELECT wallet_balance FROM users WHERE id=?");
     $st->execute([me()['id']]);
     $balance = (int)$st->fetchColumn();
@@ -71,7 +69,7 @@ try {
         throw new Exception("Bakiye yetersiz.");
     }
 
-    // Tahsilat ve bilet kaydı
+   
     $pdo->prepare("UPDATE users SET wallet_balance = wallet_balance - ? WHERE id = ?")
         ->execute([$price, me()['id']]);
     $pdo->prepare("
